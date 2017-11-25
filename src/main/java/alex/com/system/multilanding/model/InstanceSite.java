@@ -1,0 +1,89 @@
+package alex.com.system.multilanding.model;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Entity
+@Table(name = "instancesite")
+public class InstanceSite {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "instancesite_id")
+    private Long id;
+    @Column(nullable=false)
+    private String name;
+    @Column(nullable=false)
+    private String keyName;
+    private Boolean status;
+    @JsonFormat(pattern = "YYYY-MM-dd")
+    private Date dateCreate;
+    @ManyToOne
+    @JoinColumn (name="site_id")
+    @JsonBackReference
+    private Site site;
+    public InstanceSite() {
+    }
+
+    public InstanceSite(String name, String keyName, Boolean status, Date dateCreate) {
+        this.name = name;
+        this.keyName = keyName;
+        this.status = status;
+        this.dateCreate = dateCreate;
+        this.site = null;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getKeyName() {
+        return keyName;
+    }
+
+    public void setKeyName(String keyName) {
+        this.keyName = keyName;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public Date getDateCreate() {
+        return dateCreate;
+    }
+
+    public void setDateCreate(Date dateCreate) {
+        this.dateCreate = dateCreate;
+    }
+
+    public Site getSite() {
+        return site;
+    }
+
+    public void setSite(Site site) {
+        this.site = site;
+    }
+
+
+}
