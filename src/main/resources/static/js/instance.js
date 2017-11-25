@@ -28,7 +28,7 @@ function InstanceViewModel() {
     self.status = ko.observable(true);
     self.dateCreate = ko.observable("");
 
-    var ident = document.location.pathname.split("\/").pop();
+    var ident = document.location.pathname.match(/\d+/).pop();
     self.load = function () {
         $.ajax("/api/instances?id="+ident, {
             dataType: 'json',

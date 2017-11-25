@@ -93,12 +93,12 @@ public class ApiController {
     public ResponseEntity<InstanceSite> createInstanceForSite(@RequestBody InstanceSite input, @RequestParam("id") Long ident){
         Date date = new Date();
         InstanceSite i = new InstanceSite(input.getName(),input.getKeyName(),input.getStatus(),date);
-        List<Site> sites = siteRepository.findAll();
-        for (Site s :sites) {
-            if (s.getId() == ident) {
-                i.setSite(s);
-                break;
-            }
+        try {
+            Site s = siteRepository.findOne(ident);
+            i.setSite(s);
+        }
+        catch (Exception e){
+            i.setSite(null);
         }
         instanceSiteRepository.save(i);
         return new ResponseEntity<>(i, HttpStatus.OK);

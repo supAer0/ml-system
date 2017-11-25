@@ -22,6 +22,9 @@ public class Element {
     @JsonBackReference
     private Site site;
 
+    @OneToMany(mappedBy = "element", cascade = CascadeType.ALL)
+    private List<ElementValue> elementValues;
+
     public Long getId() {
         return id;
     }
@@ -49,6 +52,7 @@ public class Element {
     public Element(String name, String key) {
         this.name = name;
         this.key = key;
+        this.elementValues=new ArrayList<>();
     }
     public Element() {
     }
@@ -59,5 +63,16 @@ public class Element {
 
     public void setSite(Site site) {
         this.site = site;
+    }
+
+    public List<ElementValue> getElementValues() {
+        return elementValues;
+    }
+
+    public void setElementValues(List<ElementValue> elementValues) {
+        this.elementValues = elementValues;
+    }
+    public void addElementValue(ElementValue elementValue){
+        this.elementValues.add(elementValue);
     }
 }

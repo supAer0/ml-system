@@ -13,7 +13,7 @@ function ElementViewModel() {
     // self.el_name = ko.observable("");
     // self.el_key = ko.observable("");
 
-    var ident = document.location.pathname.match(/\d+/);
+    var ident = document.location.pathname.match(/\d+/).pop();
     self.load = function () {
         $.ajax("/api/elements?id="+ident, {
             dataType: 'json',

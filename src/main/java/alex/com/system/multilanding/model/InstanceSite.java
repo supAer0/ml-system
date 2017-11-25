@@ -26,6 +26,9 @@ public class InstanceSite {
     @JoinColumn (name="site_id")
     @JsonBackReference
     private Site site;
+    @OneToMany(mappedBy = "instanceSite", cascade = CascadeType.ALL)
+    private List<ElementValue> elementValues;
+
     public InstanceSite() {
     }
 
@@ -35,6 +38,7 @@ public class InstanceSite {
         this.status = status;
         this.dateCreate = dateCreate;
         this.site = null;
+        this.elementValues=new ArrayList<>();
     }
 
     public Long getId() {
@@ -85,5 +89,15 @@ public class InstanceSite {
         this.site = site;
     }
 
+    public void addElementValues(ElementValue elementValue) {
+        this.elementValues.add(elementValue);
+    }
 
+    public List<ElementValue> getElementValues() {
+        return elementValues;
+    }
+
+    public void setElementValues(List<ElementValue> elementValues) {
+        this.elementValues = elementValues;
+    }
 }
