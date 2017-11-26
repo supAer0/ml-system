@@ -20,12 +20,14 @@ public class ApiController {
     private final SiteRepository siteRepository;
     private final InstanceSiteRepository instanceSiteRepository;
     private final ElementRepository elementRepository;
+    private final ElementValueRepository elementValueRepository;
 
-    public ApiController(NishaRepository nishaRepository, SiteRepository siteRepository, InstanceSiteRepository instanceSiteRepository, ElementRepository elementRepository) {
+    public ApiController(NishaRepository nishaRepository, SiteRepository siteRepository, InstanceSiteRepository instanceSiteRepository, ElementRepository elementRepository, ElementValueRepository elementValueRepository) {
         this.nishaRepository = nishaRepository;
         this.siteRepository=siteRepository;
         this.instanceSiteRepository = instanceSiteRepository;
         this.elementRepository = elementRepository;
+        this.elementValueRepository=elementValueRepository;
     }
 
 
@@ -117,8 +119,18 @@ public class ApiController {
         if(s == null) {
             return ResponseEntity.notFound().build();
         }
+        //delete elements value
+        try {
+            Element element1 = elementRepository.findOne(element.getId());
+            List<ElementValue> ev = element1.getElementValues();
+            if (ev != null)
+                elementValueRepository.delete(ev);
+            elementRepository.delete(element1);
+        }
+        catch (Exception ignored){
+            return ResponseEntity.notFound().build();
+        }
 
-        elementRepository.delete(element);
         return ResponseEntity.ok().build();
     }
 
@@ -166,5 +178,44 @@ public class ApiController {
         return new ResponseEntity<>(e, HttpStatus.OK);
     }
 
+
+    @RequestMapping(value = "/elementsValue", method = RequestMethod.GET)
+    public ResponseEntity<List<El>> elementsValues(@RequestParam("id_instance") Long ident) {
+        InstanceSite is = instanceSiteRepository.findOne(ident);
+        Site s = is.getSite();
+        List<El> list = new ArrayList<>();
+        List<Element> elements= s.getElementList();
+        List<ElementValue> elementValues = is.getElementValues();
+        for (Element e:elements) {
+            El el = new El(e.getId(),e.getName(),e.getKey());
+            for (ElementValue ev:elementValues) {
+                if(e == ev.getElement()){
+                    el.setValue(ev.getValue());
+                    elementValues.remove(ev);
+                    break;
+                }
+            }
+            list.add(el);
+
+        }
+        return new ResponseEntity<>(list,HttpStatus.OK);
+
+    }
+
+    @PostMapping("/saveElementsWithValue")
+    public ResponseEntity<List<ElementValue>> saveElementsWithValue(@RequestBody List<El> els, @RequestParam("id_instance") Long ident){
+        InstanceSite is = instanceSiteRepository.findOne(ident);
+        for (El e:els) {
+            Element element = elementRepository.findOne(e.getId());
+            ElementValue ev = new ElementValue();
+            ev.setInstanceSite(is);
+            ev.setElement(element);
+            ev.setValue(e.getValue());
+            elementValueRepository.save(ev);
+        }
+
+
+        return new ResponseEntity<>(elementValueRepository.findAll(), HttpStatus.OK);
+    }
 
 }

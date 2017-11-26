@@ -1,27 +1,27 @@
-function Element(id, name,key) {
+function El(id, name,key,value) {
     var self = this;
     self.id=id;
     self.name=name;
     self.key=key;
+    self.value = value;
 }
+
+
 // The Instance view model
-function ElementViewModel() {
+function ElementValueViewModel() {
     var self = this;
     self.elements = ko.observableArray([]);
-
     self.id = ko.observable(null);
-    // self.el_name = ko.observable("");
-    // self.el_key = ko.observable("");
 
-    var ident = document.location.pathname.match(/\d+/);
+    var ident = document.location.pathname.match(/\d+/g)[1];
     self.load = function () {
-        $.ajax("/api/elements?id="+ident, {
+        $.ajax("/api/elementsValue?id_instance="+ident, {
             dataType: 'json',
             success: function (data) {
                 console.log("Успешно обработан json запрос. Записи загружены");
                 console.log("data= " + data);
                 for (var i = 0; i < data.length; i++) {
-                    self.elements.push(new Element(data[i].id, data[i].name,data[i].key));
+                    self.elements.push(new El(data[i].id, data[i].name,data[i].key,data[i].value));
                 }
                 console.log("массив= " +self.elements());
             },
@@ -33,7 +33,7 @@ function ElementViewModel() {
         });
     };
 
-    self.saveElements = function () {
+    self.save = function () {
 
         var $rows = $TABLE.find('tr:not(:hidden)');
         var headers = [];
@@ -52,23 +52,24 @@ function ElementViewModel() {
             headers.forEach(function (header, i) {
                 h[header] = $td.eq(i).text();
             });
-            var el = new Element();
+            var el = new El();
             el.id = h[headers[0]];
             el.name = h[headers[1]];
             el.key = h[headers[2]];
+            el.value = h[headers[3]];
             data.push(el);
         });
         console.log("data = " + data);
         var jsonData = ko.toJSON(data);
         console.log("JSON= " + jsonData);
         // make POST request
-        $.ajax("/api/saveElements?id="+ident, {
+        $.ajax("/api/saveElementsWithValue?id_instance="+ident, {
             data: jsonData,
             type: "post",
             contentType: 'application/json; charset=utf-8',
             success: function (allData) {
                 console.log(allData);
-                self.reload();
+                //self.reload();
                 //self.elements.push(new Element(allData.id,allData.name,allData.key));
             },
             error: function (allData) {
@@ -80,28 +81,6 @@ function ElementViewModel() {
         });
     };
 
-
-    self.removeElement = function (element) {
-        var jsonData = ko.toJSON(element);
-        console.log("(DELETE)JSON= " + jsonData);
-        // make POST request
-        $.ajax("/api/deleteElement?id="+ident, {
-            data: jsonData,
-            type: "post",
-            contentType: 'application/json; charset=utf-8',
-            success: function (allData) {
-                console.log(allData);
-                self.elements.remove(element);
-                //self.elements.push(new Element(allData.id,allData.name,allData.key));
-            },
-            error: function (allData) {
-                //alert(allData.responseText);
-                alert("Упс, что-то пошло не так, попбуйти еще раз");
-                console.log('error! Не могу отправить json запрос');
-                console.log(allData);
-            }
-        });
-    };
 
 
     self.reload = function () {
@@ -112,11 +91,4 @@ function ElementViewModel() {
 
     self.reload();
 }
-
-
-
-// Activates knockout.js
-//создаем экземпляр ViewModel
-// var instanceViewModel = new InstanceViewModel();
-// ko.applyBindings(instanceViewModel, document.getElementById("instanceViewModel"));
 

@@ -73,7 +73,7 @@
             </ul>
             <ul data-bind="foreach: sites">
                 <li class="link">
-                    <a data-bind="attr: { href: '/sites/' + id }">
+                    <a data-bind="attr: { href: '/sites/' + id + '/' }">
                         <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
                         <span class="hidden-xs hidden-sm" data-bind="text: title"></span>
                     </a>
@@ -132,38 +132,28 @@
                                <li>Simple / powerful features such as add row, remove row, move row up/down.</li>
                              </ul> -->
                             <div id="table" class="table-editable">
-                                <span class="table-add glyphicon glyphicon-plus"></span>
                                 <table class="table">
                                     <tr>
                                         <th>Id</th>
                                         <th>Название</th>
                                         <th>Ключ</th>
                                         <th>Значение</th>
-                                        <th></th>
                                     </tr>
                                     <!-- ko foreach: elements -->
                                     <tr>
                                         <td data-bind="text: id"></td>
-                                        <td contenteditable="true" data-bind="text: name"></td>
-                                        <td contenteditable="true" data-bind="text: key"></td>
-                                        <td>
-                                            <span class="table-remove glyphicon glyphicon-remove" data-bind="click: $parent.removeElement"></span>
-                                        </td>
+                                        <td data-bind="text: name"></td>
+                                        <td data-bind="text: key"></td>
+                                        <td contenteditable="true" data-bind="text: value"></td>
+
                                     </tr>
                                     <!-- /ko -->
                                     <!-- This is our clonable table line -->
-                                    <tr class="hide">
-                                        <td></td>
-                                        <td contenteditable="true">Untitled</td>
-                                        <td contenteditable="true">undefined</td>
-                                        <td>
-                                            <span class="table-remove glyphicon glyphicon-remove"></span>
-                                        </td>
-                                    </tr>
+
                                 </table>
                             </div>
 
-                            <button class="btn btn-primary" data-bind="click: saveElements">Сохранить</button>
+                            <button class="btn btn-primary" data-bind="click: save">Сохранить</button>
                             <!-- <p id="export"></p>-->
                         </div>
 
@@ -190,7 +180,7 @@
 <script>
     var viewModel = {
         sites: new SitesViewModel(),
-        elements: new ElementViewModel()
+        elements: new ElementValueViewModel()
     };
 
     ko.applyBindings(viewModel);

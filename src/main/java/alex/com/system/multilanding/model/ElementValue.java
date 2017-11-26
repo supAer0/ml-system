@@ -12,15 +12,15 @@ public class ElementValue {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "element_value_id")
     private Long id;
-    @ManyToOne(optional=false)
+    @ManyToOne
 //    @JoinTable(name = "instancesite", joinColumns = @JoinColumn(name="element_value_id"), inverseJoinColumns = @JoinColumn(name="instancesite_id"))
+    @JsonIgnore
     @JoinColumn(name="instancesite_id")
-    @JsonBackReference
     private InstanceSite instanceSite;
-    @ManyToOne(optional=false)
+    @ManyToOne
 ////    @JoinTable(name = "element", joinColumns = @JoinColumn(name="element_id"), inverseJoinColumns = @JoinColumn(name="element_value_id"))
     @JoinColumn(name="element_id")
-    @JsonIgnore
+    @JsonBackReference
     private Element element;
     @Lob
     private String value;
