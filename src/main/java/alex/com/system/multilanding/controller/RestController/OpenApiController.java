@@ -5,10 +5,7 @@ import alex.com.system.multilanding.repository.*;
 import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,5 +55,9 @@ public class OpenApiController {
             return new ResponseEntity<>(results,HttpStatus.OK);
 
 
+    }
+    @GetMapping("/a")
+    public String a(){
+        return "index";
     }
 }
